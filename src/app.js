@@ -1,40 +1,42 @@
-import menu from './js/menu.json'
-import menuTpl from './templates/menutpl.hbs'
-import Theme from './js/theme'
-import refs from './js/refs'
+import menu from './js/menu.json';
+import menuTpl from './templates/menutpl.hbs';
+import Theme from './js/theme';
+import refs from './js/refs';
 
-const {menuEl, checkEl, body} = refs
+const { menuEl, checkEl, body } = refs;
 
-function initThemePage(){
-  let themePage = Theme[localStorage.getItem('theme')]
-  if (themePage) {
-    body.classList.add(Theme[localStorage.getItem('theme')])
-    if (localStorage.getItem('theme') == 'LIGHT') {
-      checkEl.checked = false
-    } else {
-      checkEl.checked = true
-    }
-  } else {
-    body.classList.add(Theme[0])
-    localStorage.setItem('theme', Theme[0])
+const menuCreatePages = addMenuMarkup(menu);
+
+let theme = body.classList.add('light-theme');
+
+loadSavedTheme();
+
+menuEl.insertAdjacentHTML('afterbegin', menuCreatePages);
+checkEl.addEventListener('change', removePagesTheme);
+
+function addMenuMarkup(menu) {
+  return menu.map(menuTpl).join('');
+}
+
+function removePagesTheme(evt) {
+  body.classList.contains('light-theme') ? onDarkPagesTheme() : onLightPagesTheme();
+}
+
+function onDarkPagesTheme() {
+  body.classList.replace('light-theme', 'dark-theme');
+  checkEl.checked = true;
+  localStorage.setItem('theme', 'DARK');
+}
+
+function onLightPagesTheme() {
+  body.classList.replace('dark-theme', 'light-theme');
+  checkEl.checked = false;
+  localStorage.removeItem('theme');
+}
+
+function loadSavedTheme() {
+  const themePagesDefault = localStorage.getItem('theme');
+  if (themePagesDefault) {
+    return onDarkPagesTheme();
   }
 }
-
-function createListItems(){
-  const menuMarkup = menu.map((el) => menuTpl(el)).join('')
-  menuEl.innerHTML = menuMarkup
-}
-
-function setTheme() {
-  if (body.classList.contains('light-theme')) {
-    body.classList.replace('light-theme', 'dark-theme')
-    localStorage.setItem('theme', 'DARK')
-  } else {
-    body.classList.replace('dark-theme', 'light-theme')
-    localStorage.setItem('theme', 'LIGHT')
-  }
-}
-
-initThemePage()
-createListItems()
-checkEl.addEventListener('change', setTheme)
