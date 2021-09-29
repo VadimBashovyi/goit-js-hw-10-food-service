@@ -9,7 +9,7 @@ const menuCreatePages = addMenuMarkup(menu);
 
 let theme = body.classList.add('light-theme');
 
-loadSavedTheme();
+defauldThemePages();
 
 menuEl.insertAdjacentHTML('afterbegin', menuCreatePages);
 checkEl.addEventListener('change', removePagesTheme);
@@ -34,7 +34,7 @@ function onLightPagesTheme() {
   localStorage.removeItem('theme');
 }
 
-function loadSavedTheme() {
+function defauldThemePages() {
   const themePagesDefault = localStorage.getItem('theme');
   if (themePagesDefault) {
     return onDarkPagesTheme();
